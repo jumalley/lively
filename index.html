@@ -12,51 +12,48 @@
     <link rel="preconnect" href="https://www.bing.com">
     <link rel="dns-prefetch" href="https://www.bing.com">
 </head>
-<body>
-    <!-- Loading indicator -->
-    <div class="loading-indicator" id="loadingIndicator">Loading wallpaper...</div>
+<body>    <!-- Loading indicator -->
+    <div class="loading-indicator" id="loadingIndicator">Loading daily wallpaper...</div>
     
     <!-- Error message -->
     <div class="error-message" id="errorMessage">Error loading wallpaper</div>
     
     <!-- Background wallpaper -->
     <img id="wallpaper" alt="Dynamic Background Wallpaper">
-    
-    <!-- System specifications panel -->
+      <!-- System specifications panel -->
     <div class="specs-container">
         <div class="spec-item" id="cpuText">
             <span class="spec-icon">🖥️</span>
             <span class="spec-label">CPU:</span>
-            <span class="spec-value">Detecting...</span>
+            <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill cpu-progress" id="cpuProgress"></div>
+                <div class="progress-fill cpu-progress" id="cpuProgress" style="width: 15%"></div>
             </div>
         </div>
         
         <div class="spec-item" id="gpuText">
             <span class="spec-icon">🎮</span>
             <span class="spec-label">GPU:</span>
-            <span class="spec-value">Detecting...</span>
+            <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill gpu-progress" id="gpuProgress"></div>
+                <div class="progress-fill gpu-progress" id="gpuProgress" style="width: 20%"></div>
             </div>
         </div>
         
         <div class="spec-item" id="netText">
             <span class="spec-icon">🌐</span>
             <span class="spec-label">NET:</span>
-            <span class="spec-value">Detecting...</span>
+            <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill net-progress" id="netProgress"></div>
-            </div>
+                <div class="progress-fill net-progress" id="netProgress" style="width: 25%"></div>            </div>
         </div>
         
         <div class="spec-item" id="ramText">
             <span class="spec-icon">💾</span>
             <span class="spec-label">RAM:</span>
-            <span class="spec-value">Detecting...</span>
+            <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill ram-progress" id="ramProgress"></div>
+                <div class="progress-fill ram-progress" id="ramProgress" style="width: 45%"></div>
             </div>
         </div>
     </div>
