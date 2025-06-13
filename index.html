@@ -1,247 +1,33 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic PC Specs Wallpaper</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
-            width: 100vw;
-            position: relative;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        #wallpaper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        #wallpaper.loaded {
-            opacity: 1;
-        }
-
-        .specs-container {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .specs-container:hover {
-            background: rgba(0, 0, 0, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .spec-item {
-            margin-bottom: 12px;
-            font-size: 16px;
-            font-weight: 500;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: color 0.3s ease;
-        }
-
-        .spec-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .spec-icon {
-            width: 20px;
-            height: 20px;
-            opacity: 0.8;
-        }
-
-        .spec-label {
-            font-weight: 600;
-            min-width: 80px;
-        }
-
-        .spec-value {
-            font-weight: 400;
-        }
-
-        .progress-bar {
-            width: 150px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-left: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.5s ease, background-color 0.3s ease;
-        }
-
-        .cpu-progress { background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336); }
-        .gpu-progress { background: linear-gradient(90deg, #2196F3, #9C27B0); }
-        .net-progress { background: linear-gradient(90deg, #00BCD4, #009688); }
-        .ram-progress { background: linear-gradient(90deg, #FF5722, #E91E63); }
-
-        .time-info {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            text-align: right;
-        }
-
-        .current-time {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .current-date {
-            font-size: 14px;
-            opacity: 0.8;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .wallpaper-info {
-            position: absolute;
-            bottom: 30px;
-            left: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-        }
-
-        .wallpaper-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .wallpaper-description {
-            font-size: 12px;
-            opacity: 0.8;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            line-height: 1.4;
-        }
-
-        .loading-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 18px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            z-index: 5;
-        }
-
-        .error-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(244, 67, 54, 0.9);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            z-index: 15;
-            display: none;
-        }
-
-        /* Animation pour les spécifications */
-        .spec-item {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .spec-item:nth-child(1) { animation-delay: 0.1s; }
-        .spec-item:nth-child(2) { animation-delay: 0.2s; }
-        .spec-item:nth-child(3) { animation-delay: 0.3s; }
-        .spec-item:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .specs-container {
-                top: 15px;
-                left: 15px;
-                padding: 15px;
-            }
-
-            .time-info, .wallpaper-info {
-                bottom: 15px;
-                right: 15px;
-                left: 15px;
-                padding: 15px;
-            }
-
-            .spec-item {
-                font-size: 14px;
-            }
-
-            .progress-bar {
-                width: 100px;
-            }
-        }
-    </style>
+    <title>Dynamic PC Specs Wallpaper - Live Demo</title>
+    <meta name="description" content="Beautiful dynamic wallpaper with real-time PC specifications and daily Bing wallpapers">
+    <meta name="keywords" content="wallpaper, system monitor, pc specs, real-time, dynamic">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- GitHub Pages optimizations -->
+    <link rel="preconnect" href="https://www.bing.com">
+    <link rel="dns-prefetch" href="https://www.bing.com">
 </head>
 <body>
-    <div class="loading-indicator" id="loadingIndicator">Chargement du fond d'écran...</div>
-    <div class="error-message" id="errorMessage">Erreur lors du chargement du fond d'écran</div>
+    <!-- Loading indicator -->
+    <div class="loading-indicator" id="loadingIndicator">Loading wallpaper...</div>
     
-    <img id="wallpaper" alt="Bing Wallpaper">
+    <!-- Error message -->
+    <div class="error-message" id="errorMessage">Error loading wallpaper</div>
     
+    <!-- Background wallpaper -->
+    <img id="wallpaper" alt="Dynamic Background Wallpaper">
+    
+    <!-- System specifications panel -->
     <div class="specs-container">
         <div class="spec-item" id="cpuText">
             <span class="spec-icon">🖥️</span>
             <span class="spec-label">CPU:</span>
-            <span class="spec-value">i9 999990k : 10%</span>
+            <span class="spec-value">Detecting...</span>
             <div class="progress-bar">
                 <div class="progress-fill cpu-progress" id="cpuProgress"></div>
             </div>
@@ -250,7 +36,7 @@
         <div class="spec-item" id="gpuText">
             <span class="spec-icon">🎮</span>
             <span class="spec-label">GPU:</span>
-            <span class="spec-value">RTX 9900 : 15%</span>
+            <span class="spec-value">Detecting...</span>
             <div class="progress-bar">
                 <div class="progress-fill gpu-progress" id="gpuProgress"></div>
             </div>
@@ -259,7 +45,7 @@
         <div class="spec-item" id="netText">
             <span class="spec-icon">🌐</span>
             <span class="spec-label">NET:</span>
-            <span class="spec-value">WIFI 10x : 99%</span>
+            <span class="spec-value">Detecting...</span>
             <div class="progress-bar">
                 <div class="progress-fill net-progress" id="netProgress"></div>
             </div>
@@ -268,326 +54,30 @@
         <div class="spec-item" id="ramText">
             <span class="spec-icon">💾</span>
             <span class="spec-label">RAM:</span>
-            <span class="spec-value">Total: 2000 Free: 10000</span>
+            <span class="spec-value">Detecting...</span>
             <div class="progress-bar">
                 <div class="progress-fill ram-progress" id="ramProgress"></div>
             </div>
         </div>
     </div>
 
+    <!-- Time and date display -->
     <div class="time-info">
         <div class="current-time" id="currentTime"></div>
         <div class="current-date" id="currentDate"></div>
     </div>
 
+    <!-- Wallpaper information -->
     <div class="wallpaper-info" id="wallpaperInfo" style="display: none;">
         <div class="wallpaper-title" id="wallpaperTitle"></div>
         <div class="wallpaper-description" id="wallpaperDescription"></div>
     </div>
 
-    <script>
-        // Variables globales
-        let currentWallpaperData = null;
-        let lastWallpaperDate = null;
+    <!-- GitHub Pages status indicator -->
+    <div class="github-badge">
+        <span title="Hosted on GitHub Pages">📡 Live Demo</span>
+    </div>
 
-        // Fonction principale pour Lively (système de spécifications)
-        function livelySystemInformation(data) {
-            try {
-                const obj = JSON.parse(data);
-                
-                // Mise à jour CPU
-                const cpuValue = obj.CurrentCpu.toFixed(1);
-                document.getElementById("cpuText").querySelector('.spec-value').textContent = 
-                    `${obj.NameCpu}: ${cpuValue}%`;
-                document.getElementById("cpuProgress").style.width = `${Math.min(obj.CurrentCpu, 100)}%`;
-                
-                // Mise à jour GPU
-                const gpuValue = obj.CurrentGpu3D.toFixed(1);
-                document.getElementById("gpuText").querySelector('.spec-value').textContent = 
-                    `${obj.NameGpu}: ${gpuValue}%`;
-                document.getElementById("gpuProgress").style.width = `${Math.min(obj.CurrentGpu3D, 100)}%`;
-                
-                // Mise à jour réseau
-                const downSpeed = ((obj.CurrentNetDown * 8) / (1024 * 1024)).toFixed(1);
-                const upSpeed = ((obj.CurrentNetUp * 8) / (1024 * 1024)).toFixed(1);
-                document.getElementById("netText").querySelector('.spec-value').textContent = 
-                    `${obj.NameNetCard}: ↓${downSpeed} ↑${upSpeed} Mb/s`;
-                
-                const totalNetSpeed = Math.min((obj.CurrentNetDown + obj.CurrentNetUp) * 8 / (1024 * 1024) / 100 * 100, 100);
-                document.getElementById("netProgress").style.width = `${totalNetSpeed}%`;
-                
-                // Mise à jour RAM
-                const usedRam = obj.TotalRam - obj.CurrentRamAvail;
-                const ramPercentage = (usedRam / obj.TotalRam * 100).toFixed(1);
-                document.getElementById("ramText").querySelector('.spec-value').textContent = 
-                    `${(usedRam/1024).toFixed(1)}GB/${(obj.TotalRam/1024).toFixed(1)}GB (${ramPercentage}%)`;
-                document.getElementById("ramProgress").style.width = `${Math.min(ramPercentage, 100)}%`;
-                
-            } catch (error) {
-                console.error('Erreur lors de l\'analyse des données système:', error);
-            }
-        }
-
-        // Fonction pour récupérer l'image Bing du jour
-        async function fetchBingWallpaper() {
-            try {
-                document.getElementById('loadingIndicator').style.display = 'block';
-                document.getElementById('errorMessage').style.display = 'none';
-                
-                // API Bing pour récupérer l'image du jour
-                const response = await fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=fr-FR');
-                
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.images && data.images.length > 0) {
-                    const imageData = data.images[0];
-                    const imageUrl = `https://www.bing.com${imageData.url}`;
-                    
-                    currentWallpaperData = imageData;
-                    
-                    // Précharger l'image
-                    const img = new Image();
-                    img.onload = function() {
-                        const wallpaperElement = document.getElementById('wallpaper');
-                        wallpaperElement.src = imageUrl;
-                        wallpaperElement.classList.add('loaded');
-                        
-                        document.getElementById('loadingIndicator').style.display = 'none';
-                        
-                        // Afficher les informations du fond d'écran
-                        updateWallpaperInfo(imageData);
-                        
-                        // Analyser et ajuster les couleurs du texte
-                        analyzeImageAndSetTextColor(wallpaperElement);
-                    };
-                    img.onerror = function() {
-                        throw new Error('Impossible de charger l\'image');
-                    };
-                    img.src = imageUrl;
-                    
-                    lastWallpaperDate = new Date().toDateString();
-                } else {
-                    throw new Error('Aucune image trouvée dans la réponse');
-                }
-                
-            } catch (error) {
-                console.error('Erreur lors de la récupération du fond d\'écran Bing:', error);
-                document.getElementById('loadingIndicator').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'block';
-                
-                // Utiliser un fond d'écran de secours
-                setTimeout(() => {
-                    document.getElementById('errorMessage').style.display = 'none';
-                    setFallbackWallpaper();
-                }, 3000);
-            }
-        }
-
-        // Fonction pour définir un fond d'écran de secours
-        function setFallbackWallpaper() {
-            const wallpaperElement = document.getElementById('wallpaper');
-            // Gradient de secours avec des couleurs dynamiques basées sur l'heure
-            const hour = new Date().getHours();
-            let gradient;
-            
-            if (hour >= 6 && hour < 12) {
-                // Matin
-                gradient = 'linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #fdcb6e 100%)';
-            } else if (hour >= 12 && hour < 18) {
-                // Après-midi
-                gradient = 'linear-gradient(135deg, #fd79a8 0%, #fdcb6e 50%, #e17055 100%)';
-            } else if (hour >= 18 && hour < 22) {
-                // Soirée
-                gradient = 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #fd79a8 100%)';
-            } else {
-                // Nuit
-                gradient = 'linear-gradient(135deg, #2d3436 0%, #636e72 50%, #74b9ff 100%)';
-            }
-            
-            document.body.style.background = gradient;
-            wallpaperElement.style.display = 'none';
-            
-            // Ajuster les couleurs pour le gradient de secours
-            setTextColor('#ffffff');
-        }
-
-        // Fonction pour analyser l'image et ajuster la couleur du texte
-        function analyzeImageAndSetTextColor(imgElement) {
-            try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                canvas.width = imgElement.naturalWidth || imgElement.width;
-                canvas.height = imgElement.naturalHeight || imgElement.height;
-                
-                ctx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
-                
-                // Analyser les zones où se trouvent les textes
-                const zones = [
-                    { x: 0, y: 0, width: canvas.width * 0.4, height: canvas.height * 0.4 }, // Top-left (specs)
-                    { x: canvas.width * 0.6, y: canvas.height * 0.6, width: canvas.width * 0.4, height: canvas.height * 0.4 }, // Bottom-right (time)
-                    { x: 0, y: canvas.height * 0.6, width: canvas.width * 0.4, height: canvas.height * 0.4 } // Bottom-left (wallpaper info)
-                ];
-                
-                zones.forEach((zone, index) => {
-                    const imageData = ctx.getImageData(zone.x, zone.y, zone.width, zone.height);
-                    const brightness = calculateAverageBrightness(imageData.data);
-                    
-                    // Déterminer la couleur du texte basée sur la luminosité
-                    const textColor = brightness > 128 ? '#000000' : '#ffffff';
-                    const shadowColor = brightness > 128 ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)';
-                    
-                    if (index === 0) {
-                        // Zone des spécifications
-                        setSpecsTextColor(textColor, shadowColor);
-                    } else if (index === 1) {
-                        // Zone de l'heure
-                        setTimeTextColor(textColor, shadowColor);
-                    } else if (index === 2) {
-                        // Zone des informations du fond d'écran
-                        setWallpaperInfoTextColor(textColor, shadowColor);
-                    }
-                });
-                
-            } catch (error) {
-                console.error('Erreur lors de l\'analyse de l\'image:', error);
-                // Couleur par défaut en cas d'erreur
-                setTextColor('#ffffff');
-            }
-        }
-
-        // Fonction pour calculer la luminosité moyenne
-        function calculateAverageBrightness(imageData) {
-            let totalBrightness = 0;
-            const pixelCount = imageData.length / 4;
-            
-            for (let i = 0; i < imageData.length; i += 4) {
-                const r = imageData[i];
-                const g = imageData[i + 1];
-                const b = imageData[i + 2];
-                
-                // Formule de luminosité perceptuelle
-                const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
-                totalBrightness += brightness;
-            }
-            
-            return totalBrightness / pixelCount;
-        }
-
-        // Fonctions pour définir les couleurs des différentes zones
-        function setSpecsTextColor(color, shadowColor) {
-            const specsContainer = document.querySelector('.specs-container');
-            specsContainer.style.color = color;
-            specsContainer.style.textShadow = `0 2px 4px ${shadowColor}`;
-        }
-
-        function setTimeTextColor(color, shadowColor) {
-            const timeInfo = document.querySelector('.time-info');
-            timeInfo.style.color = color;
-            timeInfo.style.textShadow = `0 2px 4px ${shadowColor}`;
-        }
-
-        function setWallpaperInfoTextColor(color, shadowColor) {
-            const wallpaperInfo = document.querySelector('.wallpaper-info');
-            wallpaperInfo.style.color = color;
-            wallpaperInfo.style.textShadow = `0 2px 4px ${shadowColor}`;
-        }
-
-        function setTextColor(color) {
-            const elements = document.querySelectorAll('.specs-container, .time-info, .wallpaper-info');
-            elements.forEach(el => {
-                el.style.color = color;
-                el.style.textShadow = color === '#ffffff' ? '0 2px 4px rgba(0,0,0,0.8)' : '0 2px 4px rgba(255,255,255,0.8)';
-            });
-        }
-
-        // Fonction pour mettre à jour les informations du fond d'écran
-        function updateWallpaperInfo(imageData) {
-            const wallpaperInfo = document.getElementById('wallpaperInfo');
-            const title = document.getElementById('wallpaperTitle');
-            const description = document.getElementById('wallpaperDescription');
-            
-            if (imageData.title) {
-                title.textContent = imageData.title;
-                description.textContent = imageData.copyright || 'Image du jour Bing';
-                wallpaperInfo.style.display = 'block';
-            }
-        }
-
-        // Fonction pour mettre à jour l'heure
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit' 
-            });
-            const dateString = now.toLocaleDateString('fr-FR', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-            
-            document.getElementById('currentTime').textContent = timeString;
-            document.getElementById('currentDate').textContent = dateString;
-            
-            // Vérifier si c'est un nouveau jour pour recharger le fond d'écran
-            const currentDate = now.toDateString();
-            if (lastWallpaperDate && lastWallpaperDate !== currentDate) {
-                fetchBingWallpaper();
-            }
-        }
-
-        // Fonction pour vérifier et recharger le fond d'écran périodiquement
-        function checkForNewWallpaper() {
-            const currentDate = new Date().toDateString();
-            if (!lastWallpaperDate || lastWallpaperDate !== currentDate) {
-                fetchBingWallpaper();
-            }
-        }
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Charger le fond d'écran initial
-            fetchBingWallpaper();
-            
-            // Mettre à jour l'heure immédiatement puis chaque seconde
-            updateTime();
-            setInterval(updateTime, 1000);
-            
-            // Vérifier un nouveau fond d'écran toutes les heures
-            setInterval(checkForNewWallpaper, 3600000); // 1 heure
-            
-            // Ajouter des animations au survol des barres de progression
-            const progressBars = document.querySelectorAll('.progress-fill');
-            progressBars.forEach(bar => {
-                bar.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scaleY(1.2)';
-                });
-                bar.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scaleY(1)';
-                });
-            });
-        });
-
-        // Gestion des erreurs globales
-        window.addEventListener('error', function(event) {
-            console.error('Erreur globale:', event.error);
-        });
-
-        // Fonction pour forcer le rechargement du fond d'écran (utile pour le débogage)
-        function refreshWallpaper() {
-            fetchBingWallpaper();
-        }
-
-        // Exposer la fonction pour Lively
-        window.livelySystemInformation = livelySystemInformation;
-        window.refreshWallpaper = refreshWallpaper;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,298 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+#wallpaper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+#wallpaper.loaded {
+    opacity: 1;
+}
+
+.specs-container {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.specs-container:hover {
+    background: rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.spec-item {
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s ease;
+}
+
+.spec-item:last-child {
+    margin-bottom: 0;
+}
+
+.spec-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+}
+
+.spec-label {
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.spec-value {
+    font-weight: 400;
+}
+
+.progress-bar {
+    width: 150px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease, background-color 0.3s ease;
+}
+
+.cpu-progress { background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336); }
+.gpu-progress { background: linear-gradient(90deg, #2196F3, #9C27B0); }
+.net-progress { background: linear-gradient(90deg, #00BCD4, #009688); }
+.ram-progress { background: linear-gradient(90deg, #FF5722, #E91E63); }
+
+.time-info {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    text-align: right;
+}
+
+.current-time {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.current-date {
+    font-size: 14px;
+    opacity: 0.8;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.wallpaper-info {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+}
+
+.wallpaper-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.wallpaper-description {
+    font-size: 12px;
+    opacity: 0.8;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.4;
+}
+
+.loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+.error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 15;
+    display: none;
+}
+
+/* Animation pour les spécifications */
+.spec-item {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.spec-item:nth-child(1) { animation-delay: 0.1s; }
+.spec-item:nth-child(2) { animation-delay: 0.2s; }
+.spec-item:nth-child(3) { animation-delay: 0.3s; }
+.spec-item:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* GitHub Pages specific styles */
+.github-badge {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 12px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.github-badge:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.05);
+}
+
+/* Enhanced progress bar animations for GitHub Pages */
+.progress-fill {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Improved responsive design for mobile GitHub Pages viewers */
+@media (max-width: 480px) {
+    .github-badge {
+        font-size: 10px;
+        padding: 5px 10px;
+        top: 5px;
+        right: 5px;
+    }
+    
+    .specs-container {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 12px;
+    }
+    
+    .time-info {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        text-align: center;
+    }
+    
+    .wallpaper-info {
+        bottom: 80px;
+        left: 10px;
+        right: 10px;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .specs-container {
+        top: 15px;
+        left: 15px;
+        padding: 15px;
+    }
+
+    .time-info, .wallpaper-info {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+        padding: 15px;
+    }
+
+    .spec-item {
+        font-size: 14px;
+    }
+
+    .progress-bar {
+        width: 100px;
+    }
+}
