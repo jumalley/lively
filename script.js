@@ -292,7 +292,11 @@ async function fetchBingWallpaper() {
         const loadingIndicator = document.getElementById('loadingIndicator');
         const errorMessage = document.getElementById('errorMessage');
         
-        if (loadingIndicator) loadingIndicator.style.display = 'block';
+        // Update loading message to be more specific
+        if (loadingIndicator) {
+            loadingIndicator.textContent = 'Loading today\'s wallpaper...';
+            loadingIndicator.style.display = 'block';
+        }
         if (errorMessage) errorMessage.style.display = 'none';
         
         // Try Bing API for daily wallpaper with timeout
@@ -310,12 +314,16 @@ async function fetchBingWallpaper() {
         }
         
         const data = await response.json();
-        
-        if (data.images && data.images.length > 0) {
+          if (data.images && data.images.length > 0) {
             const imageData = data.images[0];
             const imageUrl = `https://www.bing.com${imageData.url}`;
             
             currentWallpaperData = imageData;
+            
+            // Update loading message
+            if (loadingIndicator) {
+                loadingIndicator.textContent = 'Loading image...';
+            }
             
             // Preload image with timeout
             const img = new Image();
@@ -557,6 +565,207 @@ function refreshWallpaper() {
     fetchBingWallpaper();
 }
 
+// Detect system specifications function
+function detectSystemSpecs() {
+    console.log('🔍 Detecting system specifications...');
+    
+    try {
+        // CPU Cores detection
+        const cores = navigator.hardwareConcurrency || 'Unknown';
+        const cpuElement = document.querySelector('#cpu .spec-value');
+        if (cpuElement) {
+            cpuElement.textContent = cores + (cores === 1 ? ' core' : ' cores');
+        }
+
+        // Browser and OS detection
+        const userAgent = navigator.userAgent;
+        let osName = 'Unknown OS';
+        let browserName = 'Unknown Browser';
+        
+        // OS Detection
+        if (userAgent.includes('Windows')) {
+            osName = 'Windows';
+            if (userAgent.includes('Windows NT 10.0')) osName += ' 10/11';
+            else if (userAgent.includes('Windows NT 6.3')) osName += ' 8.1';
+            else if (userAgent.includes('Windows NT 6.1')) osName += ' 7';
+        } else if (userAgent.includes('Mac')) {
+            osName = 'macOS';
+        } else if (userAgent.includes('Linux')) {
+            osName = 'Linux';
+        } else if (userAgent.includes('Android')) {
+            osName = 'Android';
+        } else if (userAgent.includes('iOS')) {
+            osName = 'iOS';
+        }
+
+        // Browser Detection
+        if (userAgent.includes('Firefox/')) {
+            browserName = 'Firefox';
+        } else if (userAgent.includes('Edg/')) {
+            browserName = 'Microsoft Edge';
+        } else if (userAgent.includes('Chrome/')) {
+            browserName = 'Chrome';
+        } else if (userAgent.includes('Safari/')) {
+            browserName = 'Safari';
+        } else if (userAgent.includes('Opera/') || userAgent.includes('OPR/')) {
+            browserName = 'Opera';
+        }
+
+        // Memory estimation based on device type and cores
+        let ramEstimate = 'Detecting...';
+        if (cores >= 8) {
+            ramEstimate = '16GB+';
+        } else if (cores >= 4) {
+            ramEstimate = '8GB+';
+        } else if (cores >= 2) {
+            ramEstimate = '4GB+';
+        } else {
+            ramEstimate = '2GB+';
+        }
+
+        // Update RAM display
+        const ramElement = document.querySelector('#ram .spec-value');
+        if (ramElement) {
+            ramElement.textContent = ramEstimate;
+        }
+
+        // Screen Resolution
+        const width = window.screen.width;
+        const height = window.screen.height;
+        const resolution = `${width} × ${height}`;
+
+        // Update NET display with connection info
+        const netElement = document.querySelector('#net .spec-value');
+        if (netElement) {
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (connection) {
+                const speed = connection.downlink ? `${connection.downlink} Mbps` : 'Connected';
+                netElement.textContent = speed;
+            } else {
+                netElement.textContent = navigator.onLine ? 'Connected' : 'Offline';
+            }
+        }
+
+        // GPU detection (basic)
+        const gpuElement = document.querySelector('#gpu .spec-value');
+        if (gpuElement) {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                        gpuElement.textContent = renderer || 'WebGL Supported';
+                    } else {
+                        gpuElement.textContent = 'WebGL Supported';
+                    }
+                } else {
+                    gpuElement.textContent = 'WebGL Not Supported';
+                }
+            } catch (e) {
+                gpuElement.textContent = 'Detection Failed';
+            }
+        }        console.log('✅ System specifications detected successfully');
+        console.log(`OS: ${osName}, Browser: ${browserName}, Cores: ${cores}, Resolution: ${resolution}`);
+
+        // Initialize progress bars with some activity
+        initializeProgressBars();
+
+    } catch (error) {
+        console.error('❌ Error detecting system specs:', error);
+        // Set fallback values
+        const elements = document.querySelectorAll('.spec-value');
+        elements.forEach(el => {
+            if (el.textContent === 'Detecting...') {
+                el.textContent = 'Unknown';
+            }
+        });
+    }
+}
+
+// Initialize progress bars with initial values
+function initializeProgressBars() {
+    const progressBars = [
+        { id: 'cpuProgress', initialValue: 15 + Math.random() * 10 },
+        { id: 'gpuProgress', initialValue: 10 + Math.random() * 15 },
+        { id: 'ramProgress', initialValue: 20 + Math.random() * 20 },
+        { id: 'netProgress', initialValue: 5 + Math.random() * 10 }
+    ];
+
+    progressBars.forEach(bar => {
+        const element = document.getElementById(bar.id);
+        if (element) {
+            // Animate to initial value
+            setTimeout(() => {
+                element.style.width = `${bar.initialValue}%`;
+                element.style.transition = 'width 1s ease-in-out';
+            }, Math.random() * 500); // Stagger the animations
+        }
+    });
+}
+
+// Start system monitoring function
+function startSystemMonitoring() {
+    console.log('📊 Starting system monitoring...');
+    
+    // Determine monitoring method based on environment
+    if (window.lively) {
+        console.log('✅ Lively detected, using Lively system information');
+        // Lively will call livelySystemInformation function automatically
+        // Set up periodic refresh for Lively
+        setInterval(() => {
+            if (window.lively && typeof livelySystemInformation === 'function') {
+                livelySystemInformation();
+            }
+        }, 2000);
+    } else {
+        console.log('🌐 Using enhanced browser-based system monitoring');
+        // Start browser-based monitoring
+        browserSystemMonitor.startMonitoring();
+        
+        // Get initial system info
+        browserSystemMonitor.getSystemInfo().then(info => {
+            systemInfo = info;
+            browserSystemMonitor.updateDisplay(info);
+            console.log('📊 System info initialized:', info);
+        }).catch(error => {
+            console.warn('Error getting initial system info:', error);
+        });
+    }
+    
+    // Set up periodic updates for dynamic values
+    setInterval(() => {
+        updateDynamicValues();
+    }, 1000);
+}
+
+// Update dynamic values that change frequently
+function updateDynamicValues() {
+    // Update network status
+    const netElement = document.querySelector('#net .spec-value');
+    if (netElement && !netElement.textContent.includes('Mbps')) {
+        netElement.textContent = navigator.onLine ? 'Connected' : 'Offline';
+    }
+    
+    // Update battery if supported
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(function(battery) {
+            const batteryLevel = Math.round(battery.level * 100);
+            let batteryText = `${batteryLevel}%`;
+            
+            if (battery.charging) {
+                batteryText += ' (Charging)';
+            }
+            
+            // You can add battery display to UI if needed
+            console.log('🔋 Battery:', batteryText);
+        }).catch(() => {
+            // Battery API not supported or failed
+        });
+    }
+}
+
 // Initialize system monitor
 const systemMonitor = new SystemMonitor();
 const browserSystemMonitor = new BrowserSystemMonitor();
@@ -575,24 +784,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check for new wallpaper every hour
     setInterval(checkForNewWallpaper, 3600000); // 1 hour
     
-    // Start system monitoring immediately (priority: Lively > Enhanced Browser > Basic Fallback)
-    if (window.lively) {
-        console.log('✅ Lively detected, using Lively system information');
-        // Lively will call livelySystemInformation function automatically
-    } else {
-        console.log('🌐 Using enhanced browser-based system monitoring (GitHub Pages compatible)');
-        // Start monitoring immediately
-        browserSystemMonitor.startMonitoring();
-        
-        // Also do an immediate update
-        browserSystemMonitor.getSystemInfo().then(info => {
-            systemInfo = info;
-            browserSystemMonitor.updateDisplay(info);
-            console.log('📊 System info initialized:', info);
-        }).catch(error => {
-            console.warn('Error getting initial system info:', error);
-        });
-    }
+    // Detect and display system specifications immediately
+    detectSystemSpecs();
+    
+    // Start continuous monitoring
+    startSystemMonitoring();
     
     // Add hover animations to progress bars
     const progressBars = document.querySelectorAll('.progress-fill');
