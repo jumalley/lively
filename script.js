@@ -1,4 +1,3 @@
-// Global variables
 let currentWallpaperData = null;
 let lastWallpaperDate = null;
 let systemInfo = {
@@ -8,16 +7,13 @@ let systemInfo = {
     network: { name: 'Unknown Network', downSpeed: 0, upSpeed: 0 }
 };
 
-// System Information Class for Dynamic PC Specs
-class SystemMonitor {
-    constructor() {
+class SystemMonitor {    constructor() {
         this.isSupported = this.checkAPISupport();
-        this.updateInterval = 1000; // 1 second
+        this.updateInterval = 1000;
         this.intervalId = null;
     }
 
     checkAPISupport() {
-        // Check if we're running in an environment that supports system APIs
         return typeof navigator !== 'undefined' && 
                'getBattery' in navigator || 
                'connection' in navigator ||
@@ -88,13 +84,11 @@ class SystemMonitor {
                     available: (totalGB - usedGB) * 1024,
                     percentage: usedPercent
                 };
-            }
-        } catch (error) {
+            }        } catch (error) {
             console.warn('RAM info not available:', error);
         }
         
-        // Fallback simulation
-        const totalMB = 16 * 1024; // Assume 16GB
+        const totalMB = 16 * 1024;
         const usedPercent = Math.random() * 60 + 20;
         const usedMB = totalMB * usedPercent / 100;
         
@@ -116,24 +110,19 @@ class SystemMonitor {
                     upSpeed: (connection.downlink || Math.random() * 100) * 0.1, // Assume 10% of download
                     type: connection.type || 'unknown'
                 };
-            }
-        } catch (error) {
+            }        } catch (error) {
             console.warn('Network info not available:', error);
         }
         
-        // Fallback simulation
         return {
             name: 'WiFi Network',
             downSpeed: Math.random() * 100 + 10,
             upSpeed: Math.random() * 20 + 5,
             type: 'wifi'
         };
-    }
-
-    simulateCPUUsage() {
-        // Simulate realistic CPU usage patterns
-        const baseUsage = Math.random() * 20 + 5; // 5-25% base
-        const spike = Math.random() < 0.1 ? Math.random() * 40 : 0; // 10% chance of spike
+    }    simulateCPUUsage() {
+        const baseUsage = Math.random() * 20 + 5;
+        const spike = Math.random() < 0.1 ? Math.random() * 40 : 0;
         return Math.min(baseUsage + spike, 100);
     }
 
@@ -187,54 +176,66 @@ class SystemMonitor {
     }
 }
 
-// Lively system information function (for compatibility)
 function livelySystemInformation(data) {
     try {
         const obj = JSON.parse(data);
         
-        // Update CPU
         const cpuValue = obj.CurrentCpu.toFixed(1);
-        document.getElementById("cpuText").querySelector('.spec-value').textContent = 
-            `${obj.NameCpu}: ${cpuValue}%`;
-        document.getElementById("cpuProgress").style.width = `${Math.min(obj.CurrentCpu, 100)}%`;
+        const cpuElement = document.getElementById("cpuText");
+        if (cpuElement) {
+            cpuElement.querySelector('.spec-value').textContent = `${obj.NameCpu}: ${cpuValue}%`;
+        }
+        const cpuProgress = document.getElementById("cpuProgress");
+        if (cpuProgress) {
+            cpuProgress.style.width = `${Math.min(obj.CurrentCpu, 100)}%`;
+        }
         
-        // Update GPU
-        const gpuValue = obj.CurrentGpu3D.toFixed(1);
-        document.getElementById("gpuText").querySelector('.spec-value').textContent = 
-            `${obj.NameGpu}: ${gpuValue}%`;
-        document.getElementById("gpuProgress").style.width = `${Math.min(obj.CurrentGpu3D, 100)}%`;
+        const gpuValue = obj.CurrentGpu3D ? obj.CurrentGpu3D.toFixed(1) : '0.0';
+        const gpuElement = document.getElementById("gpuText");
+        if (gpuElement) {
+            gpuElement.querySelector('.spec-value').textContent = `${obj.NameGpu}: ${gpuValue}%`;
+        }
+        const gpuProgress = document.getElementById("gpuProgress");
+        if (gpuProgress) {
+            gpuProgress.style.width = `${Math.min(obj.CurrentGpu3D || 0, 100)}%`;
+        }
         
-        // Update Network
         const downSpeed = ((obj.CurrentNetDown * 8) / (1024 * 1024)).toFixed(1);
         const upSpeed = ((obj.CurrentNetUp * 8) / (1024 * 1024)).toFixed(1);
-        document.getElementById("netText").querySelector('.spec-value').textContent = 
-            `${obj.NameNetCard}: ↓${downSpeed} ↑${upSpeed} Mb/s`;
+        const netElement = document.getElementById("netText");
+        if (netElement) {
+            netElement.querySelector('.spec-value').textContent = `${obj.NameNetCard}: ↓${downSpeed} ↑${upSpeed} Mb/s`;
+        }
         
-        const totalNetSpeed = Math.min((obj.CurrentNetDown + obj.CurrentNetUp) * 8 / (1024 * 1024) / 100 * 100, 100);
-        document.getElementById("netProgress").style.width = `${totalNetSpeed}%`;
+        const totalNetSpeedMbps = (obj.CurrentNetDown + obj.CurrentNetUp) * 8 / (1024 * 1024);
+        const netProgress = document.getElementById("netProgress");
+        if (netProgress) {
+            netProgress.style.width = `${Math.min(totalNetSpeedMbps, 100)}%`;
+        }
         
-        // Update RAM
         const usedRam = obj.TotalRam - obj.CurrentRamAvail;
         const ramPercentage = (usedRam / obj.TotalRam * 100).toFixed(1);
-        document.getElementById("ramText").querySelector('.spec-value').textContent = 
-            `${(usedRam/1024).toFixed(1)}GB/${(obj.TotalRam/1024).toFixed(1)}GB (${ramPercentage}%)`;
-        document.getElementById("ramProgress").style.width = `${Math.min(ramPercentage, 100)}%`;
+        const ramElement = document.getElementById("ramText");
+        if (ramElement) {
+            ramElement.querySelector('.spec-value').textContent = `${(usedRam/1024).toFixed(1)}GB/${(obj.TotalRam/1024).toFixed(1)}GB (${ramPercentage}%)`;
+        }
+        const ramProgress = document.getElementById("ramProgress");
+        if (ramProgress) {
+            ramProgress.style.width = `${Math.min(ramPercentage, 100)}%`;
+        }
         
     } catch (error) {
         console.error('Error parsing Lively system data:', error);
+        browserSystemMonitor.startMonitoring();
     }
 }
 
-// Wallpaper management
 async function fetchBingWallpaper() {
     try {
-        console.log('🖼️ Fetching Bing wallpaper...');
         document.getElementById('loadingIndicator').style.display = 'block';
         document.getElementById('errorMessage').style.display = 'none';
-        
-        // Bing API for daily wallpaper with shorter timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+          const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
         
         const response = await fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US', {
             signal: controller.signal
@@ -242,31 +243,20 @@ async function fetchBingWallpaper() {
         clearTimeout(timeoutId);
         
         if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
+            throw new Error(`HTTP Error: ${response.status}`);        }
         
         const data = await response.json();
-        console.log('📄 Wallpaper data received:', data);
-        
-        if (data.images && data.images.length > 0) {
+          if (data.images && data.images.length > 0) {
             const imageData = data.images[0];
             const imageUrl = `https://www.bing.com${imageData.url}`;
-            console.log('🖼️ Loading image:', imageUrl);
+              currentWallpaperData = imageData;
             
-            currentWallpaperData = imageData;
-            
-            // Preload image with shorter timeout
             const img = new Image();
-            img.crossOrigin = 'anonymous'; // Try to avoid CORS issues
-            
-            const imageLoadTimeout = setTimeout(() => {
-                console.warn('⚠️ Image load timeout, using fallback');
+            img.crossOrigin = 'anonymous';            const imageLoadTimeout = setTimeout(() => {
                 setFallbackWallpaper();
-            }, 10000); // 10 second timeout for image load
-            
-            img.onload = function() {
+            }, 10000);
+              img.onload = function() {
                 clearTimeout(imageLoadTimeout);
-                console.log('✅ Image loaded successfully');
                 
                 const wallpaperElement = document.getElementById('wallpaper');
                 wallpaperElement.src = imageUrl;
@@ -280,10 +270,8 @@ async function fetchBingWallpaper() {
                 // Analyze and adjust text colors
                 analyzeImageAndSetTextColor(wallpaperElement);
             };
-            
-            img.onerror = function() {
+              img.onerror = function() {
                 clearTimeout(imageLoadTimeout);
-                console.warn('❌ Image failed to load, using fallback');
                 setFallbackWallpaper();
             };
             
@@ -300,41 +288,27 @@ async function fetchBingWallpaper() {
 }
 
 function setFallbackWallpaper() {
-    console.log('🎨 Using fallback gradient wallpaper');
-    
-    // Hide loading indicator
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('errorMessage').style.display = 'none';
     
     const wallpaperElement = document.getElementById('wallpaper');
-    // Dynamic gradient based on time
     const hour = new Date().getHours();
     let gradient;
-    
-    if (hour >= 6 && hour < 12) {
-        // Morning
+      if (hour >= 6 && hour < 12) {
         gradient = 'linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #fdcb6e 100%)';
     } else if (hour >= 12 && hour < 18) {
-        // Afternoon
         gradient = 'linear-gradient(135deg, #fd79a8 0%, #fdcb6e 50%, #e17055 100%)';
     } else if (hour >= 18 && hour < 22) {
-        // Evening
         gradient = 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #fd79a8 100%)';
     } else {
-        // Night
         gradient = 'linear-gradient(135deg, #2d3436 0%, #636e72 50%, #74b9ff 100%)';
     }
-    
-    document.body.style.background = gradient;
+      document.body.style.background = gradient;
     wallpaperElement.style.display = 'none';
     
-    // Adjust colors for fallback gradient
     setTextColor('#ffffff');
-    
-    console.log('✅ Fallback wallpaper applied');
 }
 
-// Image analysis and text color adjustment
 function analyzeImageAndSetTextColor(imgElement) {
     try {
         const canvas = document.createElement('canvas');
@@ -499,15 +473,40 @@ function updateSystemInfoImmediately() {
     };
     
     immediateInfo.ram.used = immediateInfo.ram.total * immediateInfo.ram.percentage / 100;
-    
-    // Immediately update the display to remove "Detecting..." text
+      // Immediately update the display to remove "Detecting..." text
     browserSystemMonitor.updateDisplay(immediateInfo);
-    console.log('✅ Immediate system info displayed');
 }
 
 // Initialize system monitor
 const systemMonitor = new SystemMonitor();
 const browserSystemMonitor = new BrowserSystemMonitor();
+
+function initializeSystemMonitoring() {
+    const isLivelyEnvironment = (typeof window !== 'undefined' && window.lively) || 
+                               document.location.protocol === 'file:' ||
+                               window.location.href.includes('lively');
+    
+    if (isLivelyEnvironment) {
+        console.log('Lively environment detected, waiting for system information API');
+        let livelyTimeout = setTimeout(() => {
+            console.log('Lively API timeout, falling back to browser monitoring');
+            browserSystemMonitor.startMonitoring();
+        }, 3000);
+        
+        const originalLivelySystemInformation = window.livelySystemInformation;
+        window.livelySystemInformation = function(data) {
+            clearTimeout(livelyTimeout);
+            if (originalLivelySystemInformation) {
+                originalLivelySystemInformation(data);
+            } else {
+                livelySystemInformation(data);
+            }
+        };
+    } else {
+        console.log('Browser environment detected, using enhanced browser monitoring');
+        browserSystemMonitor.startMonitoring();
+    }
+}
 
 // Initialization
 document.addEventListener('DOMContentLoaded', function() {
@@ -516,33 +515,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load initial wallpaper with timeout fallback
     fetchBingWallpaper();
-    
-    // Set a fallback timeout for wallpaper - if still loading after 5 seconds, show gradient
+      // Set a fallback timeout for wallpaper - if still loading after 5 seconds, show gradient
     setTimeout(() => {
         const loadingIndicator = document.getElementById('loadingIndicator');
         if (loadingIndicator && loadingIndicator.style.display !== 'none') {
-            console.log('⚠️ Wallpaper loading timeout, switching to fallback');
             setFallbackWallpaper();
         }
     }, 5000);
     
     // Update time immediately then every second
     updateTime();
-    setInterval(updateTime, 1000);
+    setInterval(updateTime, 1000);    setInterval(checkForNewWallpaper, 3600000);
     
-    // Check for new wallpaper every hour
-    setInterval(checkForNewWallpaper, 3600000); // 1 hour
+    initializeSystemMonitoring();
     
-    // Start system monitoring (priority: Lively > Enhanced Browser > Basic Fallback)
-    if (window.lively) {
-        console.log('✅ Lively detected, using Lively system information');
-    } else {
-        console.log('🌐 Using enhanced browser-based system monitoring');
-        // Start monitoring immediately
-        browserSystemMonitor.startMonitoring();
-    }
-    
-    // Add hover animations to progress bars
     const progressBars = document.querySelectorAll('.progress-fill');
     progressBars.forEach(bar => {
         bar.addEventListener('mouseenter', function() {
@@ -886,11 +872,8 @@ class BrowserSystemMonitor extends SystemMonitor {
             const ramProgress = document.getElementById("ramProgress");
             if (ramProgress) {
                 ramProgress.style.width = `${Math.min(info.ram.percentage, 100)}%`;
-            }
-
-            console.log('✅ System info updated:', info);
-        } catch (error) {
-            console.error('❌ Error updating display:', error);
+            }        } catch (error) {
+            console.error('Error updating display:', error);
         }
     }
 }

@@ -4,49 +4,62 @@ A beautiful, dynamic wallpaper that displays real-time PC specifications, curren
 
 ## 🌐 Live Demo
 
-**[View Live Demo on GitHub Pages](https://jumalley.github.io/lively/)**
+**[View Live Demo on GitHub Pages](https://your-username.github.io/your-repo-name/)**
 
 ## ✨ Features
 
-- **🔄 Real-time System Monitoring**: Browser-based CPU, GPU, RAM, and Network monitoring
+- **🔄 Real-time System Monitoring**: 
+  - **Lively Wallpaper Integration**: Native support for Lively Wallpaper system API
+  - **Browser Fallback**: Enhanced browser-based monitoring when Lively unavailable
 - **🖼️ Dynamic Wallpapers**: Daily Bing wallpapers with automatic color adjustment
 - **📱 Fully Responsive**: Perfect on desktop, tablet, and mobile
 - **🎨 Beautiful UI**: Glass-morphism design with smooth animations
-- **🚀 GitHub Pages Ready**: Pure client-side, no server required
+- **🚀 Multi-Platform**: Works as GitHub Pages site or Lively Wallpaper
 - **⚡ Zero Setup**: Just upload files and go live
 
-## 🎯 Quick Deployment
+## 🎯 Deployment Options
 
-### Deploy to GitHub Pages in 3 steps:
+### Option 1: Lively Wallpaper (Recommended for Desktop)
+
+1. **Install Lively Wallpaper** from Microsoft Store or GitHub
+2. **Add as Wallpaper**: 
+   - Open Lively Wallpaper
+   - Click "+" → "Browse" → Select this folder
+   - The `LivelyInfo.json` file enables system information API
+3. **Real System Data**: Get actual CPU, GPU, RAM, and Network usage
+
+### Option 2: GitHub Pages (Web/Browser)
 
 1. **Create Repository** - Make it public on GitHub
-2. **Upload Files** - Just these 3 files:
-   ```
-   ├── index.html     # Main page
-   ├── styles.css     # All styling
-   └── script.js      # Browser-based monitoring
-   ```
+2. **Upload Files** - Upload all project files
 3. **Enable Pages** - Repository Settings → Pages → Deploy from main branch
 
-**That's it!** Your wallpaper will be live at: `https://username.github.io/repository-name/`
+**GitHub Pages URL**: `https://username.github.io/repository-name/`
 
 ## 📁 Project Structure
 
 ```
 dynamic-wallpaper/
-├── index.html              # Main HTML page (GitHub Pages entry point)
-├── styles.css              # Enhanced CSS with animations
-├── script.js               # Pure browser-based system monitoring
+├── index.html              # Main HTML page
+├── styles.css              # Enhanced CSS with animations  
+├── script.js               # System monitoring (Lively + Browser)
+├── LivelyInfo.json         # Lively Wallpaper configuration
 ├── README.md               # This documentation
-├── GITHUB_DEPLOY.md        # Detailed deployment guide
+├── GITHUB_DEPLOY.md        # GitHub Pages deployment guide
 ├── .github/workflows/      # GitHub Actions (optional)
 │   └── deploy.yml          # Auto-deployment workflow
 └── .gitignore              # Git ignore rules
 ```
 
-## 🖥️ System Monitoring (Browser-Based)
+## 🖥️ System Monitoring
 
-### Real-Time Detection Capabilities:
+### Lively Wallpaper (Real System Data):
+- **CPU**: Real-time processor usage and name
+- **GPU**: Actual graphics card usage and model  
+- **RAM**: Live memory usage (used/total/percentage)
+- **Network**: Real network speeds (download/upload in Mb/s)
+
+### Browser Fallback (Simulated Data):
 
 **🎮 GPU Information:**
 - Real graphics card detection via WebGL

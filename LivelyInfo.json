@@ -1,0 +1,13 @@
+{
+  "AppVersion": "1.0.0.0",
+  "Title": "Dynamic PC Specs Wallpaper",
+  "Thumbnail": "preview.jpg",
+  "Preview": "preview.gif",
+  "Desc": "Beautiful dynamic wallpaper with real-time PC specifications and daily Bing wallpapers. Shows CPU, GPU, RAM, and Network usage with stunning visual effects.",
+  "Author": "Vital",
+  "License": "MIT",
+  "Contact": "",
+  "Arguments": "--system-information",
+  "Type": 0,
+  "FileName": "index.html"
+}
