@@ -7,6 +7,20 @@ let systemInfo = {
     network: { name: 'Unknown Network', downSpeed: 0, upSpeed: 0 }
 };
 
+let livelyData = {
+    cpuCounter: 0,
+    gpuCounter: 0,
+    netDownCounter: 0,
+    netUpCounter: 0,
+    memTotal: 1,
+    memFree: 0,
+    cpuName: "",
+    gpuName: "",
+    memoryName: "",
+    netCardName: "",
+    isDataReceived: false
+};
+
 class SystemMonitor {    constructor() {
         this.isSupported = this.checkAPISupport();
         this.updateInterval = 1000;
@@ -124,20 +138,21 @@ class SystemMonitor {    constructor() {
         const baseUsage = Math.random() * 20 + 5;
         const spike = Math.random() < 0.1 ? Math.random() * 40 : 0;
         return Math.min(baseUsage + spike, 100);
-    }
-
-    startMonitoring() {
-        if (this.intervalId) return;
+    }    startMonitoring() {
+        if (this.intervalId || livelyData.isDataReceived) return;
         
         this.intervalId = setInterval(async () => {
-            systemInfo = await this.getSystemInfo();
-            this.updateDisplay(systemInfo);
+            if (!livelyData.isDataReceived) {
+                systemInfo = await this.getSystemInfo();
+                this.updateDisplay(systemInfo);
+            }
         }, this.updateInterval);
         
-        // Initial update
         this.getSystemInfo().then(info => {
-            systemInfo = info;
-            this.updateDisplay(info);
+            if (!livelyData.isDataReceived) {
+                systemInfo = info;
+                this.updateDisplay(info);
+            }
         });
     }
 
@@ -180,53 +195,66 @@ function livelySystemInformation(data) {
     try {
         const obj = JSON.parse(data);
         
-        const cpuValue = obj.CurrentCpu.toFixed(1);
-        const cpuElement = document.getElementById("cpuText");
-        if (cpuElement) {
-            cpuElement.querySelector('.spec-value').textContent = `${obj.NameCpu}: ${cpuValue}%`;
-        }
-        const cpuProgress = document.getElementById("cpuProgress");
-        if (cpuProgress) {
-            cpuProgress.style.width = `${Math.min(obj.CurrentCpu, 100)}%`;
-        }
+        livelyData.cpuName = obj.NameCpu;
+        livelyData.gpuName = obj.NameGpu;
+        livelyData.netCardName = obj.NameNetCard;
+        livelyData.memoryName = "Memory (" + (obj.TotalRam/1024).toFixed(0) + " GB)";
         
-        const gpuValue = obj.CurrentGpu3D ? obj.CurrentGpu3D.toFixed(1) : '0.0';
-        const gpuElement = document.getElementById("gpuText");
-        if (gpuElement) {
-            gpuElement.querySelector('.spec-value').textContent = `${obj.NameGpu}: ${gpuValue}%`;
-        }
-        const gpuProgress = document.getElementById("gpuProgress");
-        if (gpuProgress) {
-            gpuProgress.style.width = `${Math.min(obj.CurrentGpu3D || 0, 100)}%`;
-        }
+        livelyData.cpuCounter = obj.CurrentCpu;
+        livelyData.gpuCounter = obj.CurrentGpu3D || 0;
+        livelyData.netDownCounter = (obj.CurrentNetDown * 8) / (1024 * 1024);
+        livelyData.netUpCounter = (obj.CurrentNetUp * 8) / (1024 * 1024);
+        livelyData.memFree = obj.CurrentRamAvail;
+        livelyData.memTotal = obj.TotalRam;
         
-        const downSpeed = ((obj.CurrentNetDown * 8) / (1024 * 1024)).toFixed(1);
-        const upSpeed = ((obj.CurrentNetUp * 8) / (1024 * 1024)).toFixed(1);
-        const netElement = document.getElementById("netText");
-        if (netElement) {
-            netElement.querySelector('.spec-value').textContent = `${obj.NameNetCard}: ↓${downSpeed} ↑${upSpeed} Mb/s`;
-        }
-        
-        const totalNetSpeedMbps = (obj.CurrentNetDown + obj.CurrentNetUp) * 8 / (1024 * 1024);
-        const netProgress = document.getElementById("netProgress");
-        if (netProgress) {
-            netProgress.style.width = `${Math.min(totalNetSpeedMbps, 100)}%`;
-        }
-        
-        const usedRam = obj.TotalRam - obj.CurrentRamAvail;
-        const ramPercentage = (usedRam / obj.TotalRam * 100).toFixed(1);
-        const ramElement = document.getElementById("ramText");
-        if (ramElement) {
-            ramElement.querySelector('.spec-value').textContent = `${(usedRam/1024).toFixed(1)}GB/${(obj.TotalRam/1024).toFixed(1)}GB (${ramPercentage}%)`;
-        }
-        const ramProgress = document.getElementById("ramProgress");
-        if (ramProgress) {
-            ramProgress.style.width = `${Math.min(ramPercentage, 100)}%`;
-        }
+        updateDisplayFromLively();
         
     } catch (error) {
         console.error('Error parsing Lively system data:', error);
-        browserSystemMonitor.startMonitoring();
+        if (!livelyData.isDataReceived) {
+            browserSystemMonitor.startMonitoring();
+        }
+    }
+}
+
+function updateDisplayFromLively() {
+    const cpuElement = document.getElementById("cpuText");
+    if (cpuElement) {
+        cpuElement.querySelector('.spec-value').textContent = `${livelyData.cpuName}: ${livelyData.cpuCounter.toFixed(1)}%`;
+    }
+    const cpuProgress = document.getElementById("cpuProgress");
+    if (cpuProgress) {
+        cpuProgress.style.width = `${Math.min(livelyData.cpuCounter, 100)}%`;
+    }
+    
+    const gpuElement = document.getElementById("gpuText");
+    if (gpuElement) {
+        gpuElement.querySelector('.spec-value').textContent = `${livelyData.gpuName}: ${livelyData.gpuCounter.toFixed(1)}%`;
+    }
+    const gpuProgress = document.getElementById("gpuProgress");
+    if (gpuProgress) {
+        gpuProgress.style.width = `${Math.min(livelyData.gpuCounter, 100)}%`;
+    }
+    
+    const netElement = document.getElementById("netText");
+    if (netElement) {
+        netElement.querySelector('.spec-value').textContent = `${livelyData.netCardName}: ↓${livelyData.netDownCounter.toFixed(1)} ↑${livelyData.netUpCounter.toFixed(1)} Mb/s`;
+    }
+    const netProgress = document.getElementById("netProgress");
+    if (netProgress) {
+        const totalSpeed = Math.min((livelyData.netDownCounter + livelyData.netUpCounter), 100);
+        netProgress.style.width = `${totalSpeed}%`;
+    }
+    
+    const usedRam = livelyData.memTotal - livelyData.memFree;
+    const ramPercentage = (usedRam / livelyData.memTotal * 100);
+    const ramElement = document.getElementById("ramText");
+    if (ramElement) {
+        ramElement.querySelector('.spec-value').textContent = `${(usedRam/1024).toFixed(1)}GB/${(livelyData.memTotal/1024).toFixed(1)}GB (${ramPercentage.toFixed(1)}%)`;
+    }
+    const ramProgress = document.getElementById("ramProgress");
+    if (ramProgress) {
+        ramProgress.style.width = `${Math.min(ramPercentage, 100)}%`;
     }
 }
 
@@ -450,7 +478,10 @@ function refreshWallpaper() {
 
 // Function to immediately update system info to prevent "Detecting..." state
 function updateSystemInfoImmediately() {
-    // Get immediate system info (even if simulated) to replace "Detecting..." text
+    if (livelyData.isDataReceived) {
+        return;
+    }
+    
     const immediateInfo = {
         cpu: {
             name: navigator.hardwareConcurrency ? `CPU ${navigator.hardwareConcurrency} cores` : 'Multi-core CPU',
@@ -473,7 +504,7 @@ function updateSystemInfoImmediately() {
     };
     
     immediateInfo.ram.used = immediateInfo.ram.total * immediateInfo.ram.percentage / 100;
-      // Immediately update the display to remove "Detecting..." text
+    
     browserSystemMonitor.updateDisplay(immediateInfo);
 }
 
@@ -488,19 +519,18 @@ function initializeSystemMonitoring() {
     
     if (isLivelyEnvironment) {
         console.log('Lively environment detected, waiting for system information API');
+        
         let livelyTimeout = setTimeout(() => {
-            console.log('Lively API timeout, falling back to browser monitoring');
-            browserSystemMonitor.startMonitoring();
+            if (!livelyData.isDataReceived) {
+                console.log('Lively API timeout, falling back to browser monitoring');
+                browserSystemMonitor.startMonitoring();
+            }
         }, 3000);
         
-        const originalLivelySystemInformation = window.livelySystemInformation;
         window.livelySystemInformation = function(data) {
             clearTimeout(livelyTimeout);
-            if (originalLivelySystemInformation) {
-                originalLivelySystemInformation(data);
-            } else {
-                livelySystemInformation(data);
-            }
+            livelyData.isDataReceived = true;
+            livelySystemInformation(data);
         };
     } else {
         console.log('Browser environment detected, using enhanced browser monitoring');
@@ -540,14 +570,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Global error handling
 window.addEventListener('error', function(event) {
     console.error('Global error:', event.error);
 });
 
-// Expose functions for external access
 window.livelySystemInformation = livelySystemInformation;
 window.refreshWallpaper = refreshWallpaper;
+window.systemMonitor = systemMonitor;
+window.browserSystemMonitor = browserSystemMonitor;
 window.systemMonitor = systemMonitor;
 window.browserSystemMonitor = browserSystemMonitor;
 window.browserSystemMonitor = browserSystemMonitor;
