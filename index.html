@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic PC Specs Wallpaper - Live Demo</title>
+    <title>Dynamic PC Specs Wallpaper</title>
     <meta name="description" content="Beautiful dynamic wallpaper with real-time PC specifications and daily Bing wallpapers">
     <meta name="keywords" content="wallpaper, system monitor, pc specs, real-time, dynamic">
     <link rel="stylesheet" href="styles.css">
@@ -13,21 +13,21 @@
     <link rel="dns-prefetch" href="https://www.bing.com">
 </head>
 <body>    <!-- Loading indicator -->
-    <div class="loading-indicator" id="loadingIndicator">Loading daily wallpaper...</div>
+    <div class="loading-indicator" id="loadingIndicator">Loading...</div>
     
     <!-- Error message -->
     <div class="error-message" id="errorMessage">Error loading wallpaper</div>
     
     <!-- Background wallpaper -->
     <img id="wallpaper" alt="Dynamic Background Wallpaper">
-      <!-- System specifications panel -->
-    <div class="specs-container">
-        <div class="spec-item" id="cpuText">
+    
+    <!-- System specifications panel -->
+    <div class="specs-container">        <div class="spec-item" id="cpuText">
             <span class="spec-icon">🖥️</span>
             <span class="spec-label">CPU:</span>
             <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill cpu-progress" id="cpuProgress" style="width: 15%"></div>
+                <div class="progress-fill cpu-progress" id="cpuProgress"></div>
             </div>
         </div>
         
@@ -36,7 +36,7 @@
             <span class="spec-label">GPU:</span>
             <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill gpu-progress" id="gpuProgress" style="width: 20%"></div>
+                <div class="progress-fill gpu-progress" id="gpuProgress"></div>
             </div>
         </div>
         
@@ -45,7 +45,8 @@
             <span class="spec-label">NET:</span>
             <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill net-progress" id="netProgress" style="width: 25%"></div>            </div>
+                <div class="progress-fill net-progress" id="netProgress"></div>
+            </div>
         </div>
         
         <div class="spec-item" id="ramText">
@@ -53,7 +54,7 @@
             <span class="spec-label">RAM:</span>
             <span class="spec-value">Initializing...</span>
             <div class="progress-bar">
-                <div class="progress-fill ram-progress" id="ramProgress" style="width: 45%"></div>
+                <div class="progress-fill ram-progress" id="ramProgress"></div>
             </div>
         </div>
     </div>
@@ -68,13 +69,6 @@
     <div class="wallpaper-info" id="wallpaperInfo" style="display: none;">
         <div class="wallpaper-title" id="wallpaperTitle"></div>
         <div class="wallpaper-description" id="wallpaperDescription"></div>
-    </div>
-
-    <!-- GitHub Pages status indicator -->
-    <div class="github-badge">
-        <span title="Hosted on GitHub Pages">📡 Live Demo</span>
-    </div>
-
-    <script src="script.js"></script>
+    </div>    <script src="script.js"></script>
 </body>
 </html>

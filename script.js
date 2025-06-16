@@ -157,62 +157,33 @@ class SystemMonitor {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
-    }    updateDisplay(info) {
+    }
+
+    updateDisplay(info) {
         // Update CPU
         const cpuValue = info.cpu.usage.toFixed(1);
-        const cpuElement = document.getElementById("cpuText");
-        if (cpuElement) {
-            const cpuValueElement = cpuElement.querySelector('.spec-value');
-            if (cpuValueElement) {
-                cpuValueElement.textContent = `${info.cpu.name}: ${cpuValue}%`;
-            }
-        }
-        const cpuProgress = document.getElementById("cpuProgress");
-        if (cpuProgress) {
-            cpuProgress.style.width = `${Math.min(info.cpu.usage, 100)}%`;
-        }
+        document.getElementById("cpuText").querySelector('.spec-value').textContent = 
+            `${info.cpu.name}: ${cpuValue}%`;
+        document.getElementById("cpuProgress").style.width = `${Math.min(info.cpu.usage, 100)}%`;
         
         // Update GPU
         const gpuValue = info.gpu.usage.toFixed(1);
-        const gpuElement = document.getElementById("gpuText");
-        if (gpuElement) {
-            const gpuValueElement = gpuElement.querySelector('.spec-value');
-            if (gpuValueElement) {
-                gpuValueElement.textContent = `${info.gpu.name}: ${gpuValue}%`;
-            }
-        }
-        const gpuProgress = document.getElementById("gpuProgress");
-        if (gpuProgress) {
-            gpuProgress.style.width = `${Math.min(info.gpu.usage, 100)}%`;
-        }
+        document.getElementById("gpuText").querySelector('.spec-value').textContent = 
+            `${info.gpu.name}: ${gpuValue}%`;
+        document.getElementById("gpuProgress").style.width = `${Math.min(info.gpu.usage, 100)}%`;
         
         // Update Network
-        const netElement = document.getElementById("netText");
-        if (netElement) {
-            const netValueElement = netElement.querySelector('.spec-value');
-            if (netValueElement) {
-                netValueElement.textContent = `${info.network.name}: ↓${info.network.downSpeed.toFixed(1)} ↑${info.network.upSpeed.toFixed(1)} Mb/s`;
-            }
-        }
-        const netProgress = document.getElementById("netProgress");
-        if (netProgress) {
-            const totalNetSpeed = Math.min((info.network.downSpeed + info.network.upSpeed) / 2, 100);
-            netProgress.style.width = `${totalNetSpeed}%`;
-        }
+        document.getElementById("netText").querySelector('.spec-value').textContent = 
+            `${info.network.name}: ↓${info.network.downSpeed.toFixed(1)} ↑${info.network.upSpeed.toFixed(1)} Mb/s`;
+        
+        const totalNetSpeed = Math.min((info.network.downSpeed + info.network.upSpeed) / 2, 100);
+        document.getElementById("netProgress").style.width = `${totalNetSpeed}%`;
         
         // Update RAM
         const ramPercentage = info.ram.percentage.toFixed(1);
-        const ramElement = document.getElementById("ramText");
-        if (ramElement) {
-            const ramValueElement = ramElement.querySelector('.spec-value');
-            if (ramValueElement) {
-                ramValueElement.textContent = `${(info.ram.used/1024).toFixed(1)}GB/${(info.ram.total/1024).toFixed(1)}GB (${ramPercentage}%)`;
-            }
-        }
-        const ramProgress = document.getElementById("ramProgress");
-        if (ramProgress) {
-            ramProgress.style.width = `${Math.min(info.ram.percentage, 100)}%`;
-        }
+        document.getElementById("ramText").querySelector('.spec-value').textContent = 
+            `${(info.ram.used/1024).toFixed(1)}GB/${(info.ram.total/1024).toFixed(1)}GB (${ramPercentage}%)`;
+        document.getElementById("ramProgress").style.width = `${Math.min(info.ram.percentage, 100)}%`;
     }
 }
 
@@ -223,63 +194,31 @@ function livelySystemInformation(data) {
         
         // Update CPU
         const cpuValue = obj.CurrentCpu.toFixed(1);
-        const cpuElement = document.getElementById("cpuText");
-        if (cpuElement) {
-            const cpuValueElement = cpuElement.querySelector('.spec-value');
-            if (cpuValueElement) {
-                cpuValueElement.textContent = `${obj.NameCpu}: ${cpuValue}%`;
-            }
-        }
-        const cpuProgress = document.getElementById("cpuProgress");
-        if (cpuProgress) {
-            cpuProgress.style.width = `${Math.min(obj.CurrentCpu, 100)}%`;
-        }
+        document.getElementById("cpuText").querySelector('.spec-value').textContent = 
+            `${obj.NameCpu}: ${cpuValue}%`;
+        document.getElementById("cpuProgress").style.width = `${Math.min(obj.CurrentCpu, 100)}%`;
         
         // Update GPU
         const gpuValue = obj.CurrentGpu3D.toFixed(1);
-        const gpuElement = document.getElementById("gpuText");
-        if (gpuElement) {
-            const gpuValueElement = gpuElement.querySelector('.spec-value');
-            if (gpuValueElement) {
-                gpuValueElement.textContent = `${obj.NameGpu}: ${gpuValue}%`;
-            }
-        }
-        const gpuProgress = document.getElementById("gpuProgress");
-        if (gpuProgress) {
-            gpuProgress.style.width = `${Math.min(obj.CurrentGpu3D, 100)}%`;
-        }
+        document.getElementById("gpuText").querySelector('.spec-value').textContent = 
+            `${obj.NameGpu}: ${gpuValue}%`;
+        document.getElementById("gpuProgress").style.width = `${Math.min(obj.CurrentGpu3D, 100)}%`;
         
         // Update Network
         const downSpeed = ((obj.CurrentNetDown * 8) / (1024 * 1024)).toFixed(1);
         const upSpeed = ((obj.CurrentNetUp * 8) / (1024 * 1024)).toFixed(1);
-        const netElement = document.getElementById("netText");
-        if (netElement) {
-            const netValueElement = netElement.querySelector('.spec-value');
-            if (netValueElement) {
-                netValueElement.textContent = `${obj.NameNetCard}: ↓${downSpeed} ↑${upSpeed} Mb/s`;
-            }
-        }
+        document.getElementById("netText").querySelector('.spec-value').textContent = 
+            `${obj.NameNetCard}: ↓${downSpeed} ↑${upSpeed} Mb/s`;
         
         const totalNetSpeed = Math.min((obj.CurrentNetDown + obj.CurrentNetUp) * 8 / (1024 * 1024) / 100 * 100, 100);
-        const netProgress = document.getElementById("netProgress");
-        if (netProgress) {
-            netProgress.style.width = `${totalNetSpeed}%`;
-        }
+        document.getElementById("netProgress").style.width = `${totalNetSpeed}%`;
         
         // Update RAM
         const usedRam = obj.TotalRam - obj.CurrentRamAvail;
         const ramPercentage = (usedRam / obj.TotalRam * 100).toFixed(1);
-        const ramElement = document.getElementById("ramText");
-        if (ramElement) {
-            const ramValueElement = ramElement.querySelector('.spec-value');
-            if (ramValueElement) {
-                ramValueElement.textContent = `${(usedRam/1024).toFixed(1)}GB/${(obj.TotalRam/1024).toFixed(1)}GB (${ramPercentage}%)`;
-            }
-        }
-        const ramProgress = document.getElementById("ramProgress");
-        if (ramProgress) {
-            ramProgress.style.width = `${Math.min(ramPercentage, 100)}%`;
-        }
+        document.getElementById("ramText").querySelector('.spec-value').textContent = 
+            `${(usedRam/1024).toFixed(1)}GB/${(obj.TotalRam/1024).toFixed(1)}GB (${ramPercentage}%)`;
+        document.getElementById("ramProgress").style.width = `${Math.min(ramPercentage, 100)}%`;
         
     } catch (error) {
         console.error('Error parsing Lively system data:', error);
@@ -289,24 +228,17 @@ function livelySystemInformation(data) {
 // Wallpaper management
 async function fetchBingWallpaper() {
     try {
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const errorMessage = document.getElementById('errorMessage');
+        console.log('🖼️ Fetching Bing wallpaper...');
+        document.getElementById('loadingIndicator').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
         
-        // Update loading message to be more specific
-        if (loadingIndicator) {
-            loadingIndicator.textContent = 'Loading today\'s wallpaper...';
-            loadingIndicator.style.display = 'block';
-        }
-        if (errorMessage) errorMessage.style.display = 'none';
-        
-        // Try Bing API for daily wallpaper with timeout
+        // Bing API for daily wallpaper with shorter timeout
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
         
-        const response = await fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=fr-FR', {
+        const response = await fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US', {
             signal: controller.signal
         });
-        
         clearTimeout(timeoutId);
         
         if (!response.ok) {
@@ -314,81 +246,67 @@ async function fetchBingWallpaper() {
         }
         
         const data = await response.json();
-          if (data.images && data.images.length > 0) {
+        console.log('📄 Wallpaper data received:', data);
+        
+        if (data.images && data.images.length > 0) {
             const imageData = data.images[0];
             const imageUrl = `https://www.bing.com${imageData.url}`;
+            console.log('🖼️ Loading image:', imageUrl);
             
             currentWallpaperData = imageData;
             
-            // Update loading message
-            if (loadingIndicator) {
-                loadingIndicator.textContent = 'Loading image...';
-            }
-            
-            // Preload image with timeout
+            // Preload image with shorter timeout
             const img = new Image();
+            img.crossOrigin = 'anonymous'; // Try to avoid CORS issues
             
-            const imageLoadPromise = new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = imageUrl;
-            });
+            const imageLoadTimeout = setTimeout(() => {
+                console.warn('⚠️ Image load timeout, using fallback');
+                setFallbackWallpaper();
+            }, 10000); // 10 second timeout for image load
             
-            // Add timeout for image loading
-            const imageTimeout = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Image load timeout')), 15000)
-            );
-            
-            await Promise.race([imageLoadPromise, imageTimeout]);
-            
-            // Image loaded successfully
-            const wallpaperElement = document.getElementById('wallpaper');
-            if (wallpaperElement) {
+            img.onload = function() {
+                clearTimeout(imageLoadTimeout);
+                console.log('✅ Image loaded successfully');
+                
+                const wallpaperElement = document.getElementById('wallpaper');
                 wallpaperElement.src = imageUrl;
                 wallpaperElement.classList.add('loaded');
-            }
+                
+                document.getElementById('loadingIndicator').style.display = 'none';
+                
+                // Show wallpaper info
+                updateWallpaperInfo(imageData);
+                
+                // Analyze and adjust text colors
+                analyzeImageAndSetTextColor(wallpaperElement);
+            };
             
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            img.onerror = function() {
+                clearTimeout(imageLoadTimeout);
+                console.warn('❌ Image failed to load, using fallback');
+                setFallbackWallpaper();
+            };
             
-            // Show wallpaper info
-            updateWallpaperInfo(imageData);
-            
-            // Analyze and adjust text colors
-            analyzeImageAndSetTextColor(wallpaperElement);
-            
+            img.src = imageUrl;
             lastWallpaperDate = new Date().toDateString();
-            console.log('✅ Bing wallpaper loaded successfully');
-            
         } else {
             throw new Error('No image found in response');
         }
         
     } catch (error) {
-        console.warn('Bing wallpaper failed, using fallback:', error);
-        
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const errorMessage = document.getElementById('errorMessage');
-        
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-        
-        // Show error briefly then use fallback
-        if (errorMessage) {
-            errorMessage.style.display = 'block';
-            setTimeout(() => {
-                if (errorMessage) errorMessage.style.display = 'none';
-            }, 2000);
-        }
-        
-        // Use fallback wallpaper immediately
+        console.error('Error fetching Bing wallpaper:', error);
         setFallbackWallpaper();
     }
 }
 
 function setFallbackWallpaper() {
-    console.log('🎨 Setting fallback wallpaper...');
+    console.log('🎨 Using fallback gradient wallpaper');
+    
+    // Hide loading indicator
+    document.getElementById('loadingIndicator').style.display = 'none';
+    document.getElementById('errorMessage').style.display = 'none';
     
     const wallpaperElement = document.getElementById('wallpaper');
-    
     // Dynamic gradient based on time
     const hour = new Date().getHours();
     let gradient;
@@ -408,21 +326,12 @@ function setFallbackWallpaper() {
     }
     
     document.body.style.background = gradient;
-    
-    if (wallpaperElement) {
-        wallpaperElement.style.display = 'none';
-    }
+    wallpaperElement.style.display = 'none';
     
     // Adjust colors for fallback gradient
     setTextColor('#ffffff');
     
-    // Hide wallpaper info since we're using fallback
-    const wallpaperInfo = document.getElementById('wallpaperInfo');
-    if (wallpaperInfo) {
-        wallpaperInfo.style.display = 'none';
-    }
-    
-    console.log('✅ Fallback wallpaper set successfully');
+    console.log('✅ Fallback wallpaper applied');
 }
 
 // Image analysis and text color adjustment
@@ -565,429 +474,35 @@ function refreshWallpaper() {
     fetchBingWallpaper();
 }
 
-// Detect system specifications function
-function detectSystemSpecs() {
-    console.log('🔍 Detecting system specifications...');
-    
-    try {
-        // CPU Detection with enhanced info
-        const cores = navigator.hardwareConcurrency || 4;
-        let cpuName = `${cores}-Core CPU`;
-        
-        // Enhanced CPU detection from User Agent
-        const userAgent = navigator.userAgent;
-        if (userAgent.includes('Intel')) {
-            cpuName = `Intel ${cores}-Core CPU`;
-        } else if (userAgent.includes('AMD')) {
-            cpuName = `AMD ${cores}-Core CPU`;
-        } else if (userAgent.includes('ARM')) {
-            cpuName = `ARM ${cores}-Core CPU`;
+// Function to immediately update system info to prevent "Detecting..." state
+function updateSystemInfoImmediately() {
+    // Get immediate system info (even if simulated) to replace "Detecting..." text
+    const immediateInfo = {
+        cpu: {
+            name: navigator.hardwareConcurrency ? `CPU ${navigator.hardwareConcurrency} cores` : 'Multi-core CPU',
+            usage: Math.random() * 30 + 10
+        },
+        gpu: {
+            name: 'Graphics Card',
+            usage: Math.random() * 40 + 5
+        },
+        ram: {
+            total: navigator.deviceMemory ? navigator.deviceMemory * 1024 : 16 * 1024,
+            used: 0,
+            percentage: Math.random() * 60 + 20
+        },
+        network: {
+            name: navigator.connection ? (navigator.connection.effectiveType || 'Network') : 'Network',
+            downSpeed: Math.random() * 100 + 10,
+            upSpeed: Math.random() * 20 + 5
         }
-        
-        // CPU Architecture detection
-        let cpuArch = 'Unknown';
-        if (userAgent.includes('Win64') || userAgent.includes('Linux x86_64') || 
-            userAgent.includes('Macintosh; Intel Mac OS X') || 
-            userAgent.includes('WOW64')) {
-            cpuArch = '64-bit';
-        } else if (userAgent.includes('Win32') || userAgent.includes('Linux i686')) {
-            cpuArch = '32-bit';
-        }
-        
-        // Initial CPU usage simulation
-        const initialCpuUsage = Math.random() * 30 + 15; // 15-45%
-        
-        // Update CPU display
-        const cpuElement = document.getElementById("cpuText");
-        if (cpuElement) {
-            const cpuValueElement = cpuElement.querySelector('.spec-value');
-            if (cpuValueElement) {
-                cpuValueElement.textContent = `${cpuName}: ${initialCpuUsage.toFixed(1)}%`;
-            }
-        }
-        const cpuProgress = document.getElementById("cpuProgress");
-        if (cpuProgress) {
-            cpuProgress.style.width = `${Math.min(initialCpuUsage, 100)}%`;
-        }
-        
-        // GPU Detection
-        detectGPU().then(gpuInfo => {
-            const gpuElement = document.getElementById("gpuText");
-            if (gpuElement) {
-                const gpuValueElement = gpuElement.querySelector('.spec-value');
-                if (gpuValueElement) {
-                    gpuValueElement.textContent = `${gpuInfo.name}: ${gpuInfo.usage.toFixed(1)}%`;
-                }
-            }
-            const gpuProgress = document.getElementById("gpuProgress");
-            if (gpuProgress) {
-                gpuProgress.style.width = `${Math.min(gpuInfo.usage, 100)}%`;
-            }
-        });
-        
-        // RAM Detection with device memory API
-        detectRAM().then(ramInfo => {
-            const ramElement = document.getElementById("ramText");
-            if (ramElement) {
-                const ramValueElement = ramElement.querySelector('.spec-value');
-                if (ramValueElement) {
-                    ramValueElement.textContent = `${(ramInfo.used/1024).toFixed(1)}GB/${(ramInfo.total/1024).toFixed(1)}GB (${ramInfo.percentage.toFixed(1)}%)`;
-                }
-            }
-            const ramProgress = document.getElementById("ramProgress");
-            if (ramProgress) {
-                ramProgress.style.width = `${Math.min(ramInfo.percentage, 100)}%`;
-            }
-        });
-        
-        // Network Detection with connection API
-        detectNetwork().then(networkInfo => {
-            const netElement = document.getElementById("netText");
-            if (netElement) {
-                const netValueElement = netElement.querySelector('.spec-value');
-                if (netValueElement) {
-                    netValueElement.textContent = `${networkInfo.name}: ↓${networkInfo.downSpeed.toFixed(1)} ↑${networkInfo.upSpeed.toFixed(1)} Mb/s`;
-                }
-            }
-            const netProgress = document.getElementById("netProgress");
-            if (netProgress) {
-                const totalNetSpeed = Math.min((networkInfo.downSpeed + networkInfo.upSpeed) / 2, 100);
-                netProgress.style.width = `${totalNetSpeed}%`;
-            }
-        });
-        
-        // Browser and OS info (for logging)
-        let osName = 'Unknown OS';
-        let browserName = 'Unknown Browser';
-        
-        // OS Detection
-        if (userAgent.includes('Windows')) {
-            osName = 'Windows';
-            if (userAgent.includes('Windows NT 10.0')) osName += ' 10/11';
-            else if (userAgent.includes('Windows NT 6.3')) osName += ' 8.1';
-            else if (userAgent.includes('Windows NT 6.1')) osName += ' 7';
-        } else if (userAgent.includes('Mac')) {
-            osName = 'macOS';
-        } else if (userAgent.includes('Linux')) {
-            osName = 'Linux';
-        } else if (userAgent.includes('Android')) {
-            osName = 'Android';
-        } else if (userAgent.includes('iOS')) {
-            osName = 'iOS';
-        }
-        
-        // Browser Detection
-        if (userAgent.includes('Firefox/')) {
-            browserName = 'Firefox';
-        } else if (userAgent.includes('Edg/')) {
-            browserName = 'Microsoft Edge';
-        } else if (userAgent.includes('Chrome/')) {
-            browserName = 'Chrome';
-        } else if (userAgent.includes('Safari/')) {
-            browserName = 'Safari';
-        } else if (userAgent.includes('Opera/') || userAgent.includes('OPR/')) {
-            browserName = 'Opera';
-        }
-        
-        // Screen Resolution
-        const width = window.screen.width * (window.devicePixelRatio || 1);
-        const height = window.screen.height * (window.devicePixelRatio || 1);
-        const resolution = `${width} × ${height}`;
-        
-        console.log('✅ System specifications detected successfully');
-        console.log(`OS: ${osName}, Browser: ${browserName}, CPU: ${cpuName} (${cpuArch}), Cores: ${cores}, Resolution: ${resolution}`);
-        
-    } catch (error) {
-        console.error('❌ Error detecting system specifications:', error);
-        
-        // Fallback values in case of error
-        const cpuElement = document.getElementById("cpuText");
-        if (cpuElement) {
-            const cpuValueElement = cpuElement.querySelector('.spec-value');
-            if (cpuValueElement) {
-                cpuValueElement.textContent = 'Multi-Core CPU: 25.0%';
-            }
-        }
-        
-        const gpuElement = document.getElementById("gpuText");
-        if (gpuElement) {
-            const gpuValueElement = gpuElement.querySelector('.spec-value');
-            if (gpuValueElement) {
-                gpuValueElement.textContent = 'Graphics Card: 20.0%';
-            }
-        }
-    }
-}
-
-// GPU Detection Function
-async function detectGPU() {
-    try {
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-        
-        if (gl) {
-            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-            let gpuName = 'Unknown GPU';
-            
-            if (debugInfo) {
-                const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                gpuName = renderer || 'Unknown GPU';
-                
-                // Clean up GPU name for better display
-                if (gpuName.includes('ANGLE')) {
-                    const match = gpuName.match(/Direct3D11 vs_5_0 ps_5_0, (.+)/);
-                    if (match) gpuName = match[1];
-                }
-                
-                // Simplify common GPU names
-                if (gpuName.includes('NVIDIA')) {
-                    gpuName = gpuName.replace(/NVIDIA Corporation /, '').replace(/NVIDIA /, '');
-                }
-                if (gpuName.includes('AMD')) {
-                    gpuName = gpuName.replace(/Advanced Micro Devices, Inc\. /, '');
-                }
-                if (gpuName.includes('Intel')) {
-                    gpuName = gpuName.replace(/Intel\(R\) /, '').replace(/Intel /, '');
-                }
-                
-                // Truncate very long names
-                if (gpuName.length > 25) {
-                    gpuName = gpuName.substring(0, 22) + '...';
-                }
-            }
-            
-            // Performance test for GPU usage estimation
-            const startTime = performance.now();
-            
-            // Create a simple test to stress the GPU slightly
-            const texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 256, 256, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-            
-            const renderTime = performance.now() - startTime;
-            
-            // Calculate GPU usage based on various factors
-            let gpuUsage = 10; // Base usage
-            gpuUsage += Math.min(renderTime * 0.5, 20); // Render performance factor
-            
-            // Add realistic patterns based on time
-            const hour = new Date().getHours();
-            if (hour >= 19 && hour <= 23) {
-                gpuUsage += 15; // Gaming/entertainment hours
-            }
-            
-            // Add smooth variation
-            gpuUsage += Math.sin(Date.now() / 15000) * 12;
-            gpuUsage += (Math.random() - 0.5) * 20;
-            
-            // Clean up
-            gl.deleteTexture(texture);
-            canvas.remove();
-            
-            return {
-                name: gpuName,
-                usage: Math.max(3, Math.min(gpuUsage, 85))
-            };
-        }
-    } catch (error) {
-        console.warn('GPU detection failed:', error);
-    }
-    
-    return {
-        name: 'Integrated Graphics',
-        usage: Math.random() * 25 + 10
     };
-}
-
-// RAM Detection Function
-async function detectRAM() {
-    let totalGB = 8; // Default estimate
-    let usedPercent = 50;
     
-    try {
-        // Use navigator.deviceMemory if available (Chrome)
-        if ('deviceMemory' in navigator) {
-            totalGB = navigator.deviceMemory;
-        } else {
-            // Estimate based on platform and cores
-            const cores = navigator.hardwareConcurrency || 4;
-            const userAgent = navigator.userAgent;
-            
-            if (userAgent.includes('Mobile') || userAgent.includes('Android') || userAgent.includes('iPhone')) {
-                totalGB = cores >= 8 ? 8 : 4; // Mobile devices
-            } else if (userAgent.includes('Windows')) {
-                totalGB = cores >= 8 ? 32 : cores >= 4 ? 16 : 8; // Desktop Windows
-            } else if (userAgent.includes('Mac')) {
-                totalGB = cores >= 8 ? 32 : 16; // Macs typically have more RAM
-            } else {
-                totalGB = cores >= 4 ? 16 : 8; // Other platforms
-            }
-        }
-        
-        // Use performance.memory for more accurate simulation if available
-        if (performance.memory) {
-            const heapUsage = performance.memory.usedJSHeapSize / performance.memory.totalJSHeapSize;
-            usedPercent = 30 + (heapUsage * 40); // 30-70% base range
-        } else {
-            // Realistic simulation based on time patterns
-            const hour = new Date().getHours();
-            const baseUsage = hour >= 9 && hour <= 18 ? 55 : 35; // Work vs. idle hours
-            usedPercent = baseUsage + (Math.random() * 20 - 10); // ±10% variation
-        }
-        
-        usedPercent = Math.max(25, Math.min(usedPercent, 85));
-        
-    } catch (error) {
-        console.warn('RAM detection failed:', error);
-    }
+    immediateInfo.ram.used = immediateInfo.ram.total * immediateInfo.ram.percentage / 100;
     
-    const totalMB = totalGB * 1024;
-    const usedMB = totalMB * usedPercent / 100;
-    
-    return {
-        total: totalMB,
-        used: usedMB,
-        available: totalMB - usedMB,
-        percentage: usedPercent
-    };
-}
-
-// Network Detection Function
-async function detectNetwork() {
-    let networkName = 'WiFi';
-    let maxSpeed = 100;
-    
-    try {
-        if ('connection' in navigator) {
-            const conn = navigator.connection;
-            
-            // Determine connection type and realistic speeds
-            switch (conn.effectiveType) {
-                case 'slow-2g':
-                    maxSpeed = 0.5;
-                    networkName = '2G (Slow)';
-                    break;
-                case '2g':
-                    maxSpeed = 2;
-                    networkName = '2G';
-                    break;
-                case '3g':
-                    maxSpeed = 10;
-                    networkName = '3G';
-                    break;
-                case '4g':
-                    maxSpeed = 50;
-                    networkName = '4G LTE';
-                    break;
-                default:
-                    maxSpeed = conn.downlink || 100;
-                    networkName = conn.type === 'wifi' ? 'WiFi' : 'Ethernet';
-            }
-            
-            // Use actual downlink if available
-            if (conn.downlink && conn.downlink > 0) {
-                maxSpeed = conn.downlink;
-            }
-        }
-    } catch (error) {
-        console.warn('Network detection failed:', error);
-    }
-    
-    // Simulate realistic network usage patterns
-    const timeOfDay = new Date().getHours();
-    let usageMultiplier = 0.1; // Base 10% usage
-    
-    // Peak usage times
-    if (timeOfDay >= 19 && timeOfDay <= 23) {
-        usageMultiplier = 0.4; // Evening streaming
-    } else if (timeOfDay >= 9 && timeOfDay <= 17) {
-        usageMultiplier = 0.25; // Work hours
-    }
-    
-    // Add realistic fluctuation
-    usageMultiplier += (Math.random() * 0.2 - 0.1); // ±10% variation
-    usageMultiplier = Math.max(0.05, Math.min(usageMultiplier, 0.6));
-    
-    const downSpeed = maxSpeed * usageMultiplier;
-    const upSpeed = downSpeed * (0.1 + Math.random() * 0.15); // 10-25% of download    
-    return {
-        name: networkName,
-        downSpeed: Math.max(0.1, downSpeed),
-        upSpeed: Math.max(0.05, upSpeed),
-        type: 'detected'
-    };
-}
-
-// Start continuous monitoring function
-function startSystemMonitoring() {
-    console.log('📊 Starting system monitoring...');
-    
-    // Initialize progress bars with some activity first
-    const progressBars = [
-        { id: 'cpuProgress', initialValue: 15 + Math.random() * 10 },
-        { id: 'gpuProgress', initialValue: 10 + Math.random() * 15 },
-        { id: 'ramProgress', initialValue: 20 + Math.random() * 20 },
-        { id: 'netProgress', initialValue: 5 + Math.random() * 10 }
-    ];
-
-    progressBars.forEach(bar => {
-        const element = document.getElementById(bar.id);
-        if (element) {
-            // Animate to initial value
-            setTimeout(() => {
-                element.style.width = `${bar.initialValue}%`;
-                element.style.transition = 'width 1s ease-in-out';
-            }, Math.random() * 500); // Stagger the animations
-        }
-    });
-    
-    // Determine monitoring method based on environment
-    if (window.lively) {
-        console.log('✅ Lively detected, using Lively system information');
-        // Lively will call livelySystemInformation function automatically
-    } else {        console.log('🌐 Using enhanced browser-based system monitoring');
-        // Start continuous monitoring after initial setup
-        setTimeout(() => {
-            browserSystemMonitor.startMonitoring();
-        }, 2000); // Give time for initial detection to complete
-    }
-    
-    // Set up periodic updates for dynamic values
-    setInterval(() => {
-        updateDynamicValues();
-    }, 1000);
-}
-
-// Update dynamic values that change frequently
-function updateDynamicValues() {
-    // Update network status
-    const netElement = document.querySelector('#netText .spec-value');
-    if (netElement && !netElement.textContent.includes('Mb/s')) {
-        const connection = navigator.connection;
-        if (connection && connection.downlink) {
-            netElement.textContent = `Network: ${connection.downlink.toFixed(1)} Mb/s`;
-        } else {
-            netElement.textContent = navigator.onLine ? 'Network: Connected' : 'Network: Offline';
-        }
-    }
-    
-    // Update battery if supported
-    if ('getBattery' in navigator) {
-        navigator.getBattery().then(function(battery) {
-            const batteryLevel = Math.round(battery.level * 100);
-            let batteryText = `${batteryLevel}%`;
-            
-            if (battery.charging) {
-                batteryText += ' (Charging)';
-            }
-            
-            // You can add battery display to UI if needed
-            console.log('🔋 Battery:', batteryText);
-        }).catch(() => {
-            // Battery API not supported or failed
-        });
-    }
+    // Immediately update the display to remove "Detecting..." text
+    browserSystemMonitor.updateDisplay(immediateInfo);
+    console.log('✅ Immediate system info displayed');
 }
 
 // Initialize system monitor
@@ -996,10 +511,20 @@ const browserSystemMonitor = new BrowserSystemMonitor();
 
 // Initialization
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Initializing Dynamic PC Specs Wallpaper...');
+    // Immediately replace "Detecting..." with actual system info
+    updateSystemInfoImmediately();
     
-    // Load initial wallpaper
+    // Load initial wallpaper with timeout fallback
     fetchBingWallpaper();
+    
+    // Set a fallback timeout for wallpaper - if still loading after 5 seconds, show gradient
+    setTimeout(() => {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator && loadingIndicator.style.display !== 'none') {
+            console.log('⚠️ Wallpaper loading timeout, switching to fallback');
+            setFallbackWallpaper();
+        }
+    }, 5000);
     
     // Update time immediately then every second
     updateTime();
@@ -1008,11 +533,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check for new wallpaper every hour
     setInterval(checkForNewWallpaper, 3600000); // 1 hour
     
-    // Detect and display system specifications immediately
-    detectSystemSpecs();
-    
-    // Start continuous monitoring
-    startSystemMonitoring();
+    // Start system monitoring (priority: Lively > Enhanced Browser > Basic Fallback)
+    if (window.lively) {
+        console.log('✅ Lively detected, using Lively system information');
+    } else {
+        console.log('🌐 Using enhanced browser-based system monitoring');
+        // Start monitoring immediately
+        browserSystemMonitor.startMonitoring();
+    }
     
     // Add hover animations to progress bars
     const progressBars = document.querySelectorAll('.progress-fill');
@@ -1024,8 +552,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'scaleY(1)';
         });
     });
-    
-    console.log('✅ Initialization complete');
 });
 
 // Global error handling
@@ -1307,6 +833,64 @@ class BrowserSystemMonitor extends SystemMonitor {
             };
         } catch (error) {
             return await super.getNetworkInfo();
+        }
+    }
+
+    // Override updateDisplay to ensure it works correctly
+    updateDisplay(info) {
+        try {
+            // Update CPU
+            const cpuValue = info.cpu.usage.toFixed(1);
+            const cpuElement = document.getElementById("cpuText");
+            if (cpuElement) {
+                cpuElement.querySelector('.spec-value').textContent = 
+                    `${info.cpu.name}: ${cpuValue}%`;
+            }
+            const cpuProgress = document.getElementById("cpuProgress");
+            if (cpuProgress) {
+                cpuProgress.style.width = `${Math.min(info.cpu.usage, 100)}%`;
+            }
+            
+            // Update GPU
+            const gpuValue = info.gpu.usage.toFixed(1);
+            const gpuElement = document.getElementById("gpuText");
+            if (gpuElement) {
+                gpuElement.querySelector('.spec-value').textContent = 
+                    `${info.gpu.name}: ${gpuValue}%`;
+            }
+            const gpuProgress = document.getElementById("gpuProgress");
+            if (gpuProgress) {
+                gpuProgress.style.width = `${Math.min(info.gpu.usage, 100)}%`;
+            }
+            
+            // Update Network
+            const netElement = document.getElementById("netText");
+            if (netElement) {
+                netElement.querySelector('.spec-value').textContent = 
+                    `${info.network.name}: ↓${info.network.downSpeed.toFixed(1)} ↑${info.network.upSpeed.toFixed(1)} Mb/s`;
+            }
+            
+            const totalNetSpeed = Math.min((info.network.downSpeed + info.network.upSpeed) / 2, 100);
+            const netProgress = document.getElementById("netProgress");
+            if (netProgress) {
+                netProgress.style.width = `${totalNetSpeed}%`;
+            }
+            
+            // Update RAM
+            const ramPercentage = info.ram.percentage.toFixed(1);
+            const ramElement = document.getElementById("ramText");
+            if (ramElement) {
+                ramElement.querySelector('.spec-value').textContent = 
+                    `${(info.ram.used/1024).toFixed(1)}GB/${(info.ram.total/1024).toFixed(1)}GB (${ramPercentage}%)`;
+            }
+            const ramProgress = document.getElementById("ramProgress");
+            if (ramProgress) {
+                ramProgress.style.width = `${Math.min(info.ram.percentage, 100)}%`;
+            }
+
+            console.log('✅ System info updated:', info);
+        } catch (error) {
+            console.error('❌ Error updating display:', error);
         }
     }
 }

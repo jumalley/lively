@@ -4,7 +4,7 @@ A beautiful, dynamic wallpaper that displays real-time PC specifications, curren
 
 ## 🌐 Live Demo
 
-**[View Live Demo on GitHub Pages](https://jumalley.github.io/lively/)**
+**[View Live Demo on GitHub Pages](https://your-username.github.io/your-repo-name/)**
 
 ## ✨ Features
 
